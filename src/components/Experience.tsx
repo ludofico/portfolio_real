@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { experiences, education, certifications } from "@/lib/data";
 import { Briefcase, GraduationCap, Award, ExternalLink } from "lucide-react";
 import { SwissContainer, SwissTag, SwissCard } from "@/components/SwissGrid";
+import { useLanguage } from "@/context/LanguageContext";
 
 const colorMap: Record<string, string> = {
     lime: "#c6f135",
@@ -13,6 +14,8 @@ const colorMap: Record<string, string> = {
 };
 
 export default function Experience() {
+    const { t } = useLanguage();
+
     return (
         <section id="experience" className="swiss-section relative bg-[#0f0f0f]">
             {/* Background Pattern */}
@@ -32,11 +35,11 @@ export default function Experience() {
                     </div>
                     <div className="col-span-12 lg:col-span-10">
                         <div className="flex items-center gap-6 mb-6">
-                            <h2 className="swiss-headline">Experience</h2>
+                            <h2 className="swiss-headline">{t("experience.title")}</h2>
                             <div className="h-px flex-1 bg-[#2a2a2a]" />
                         </div>
                         <p className="swiss-body-lg text-[#888] max-w-2xl">
-                            Professional journey through software development and AI integration.
+                            {t("experience.subtitle")}
                         </p>
                     </div>
                 </motion.div>
@@ -48,7 +51,7 @@ export default function Experience() {
                         <div className="flex items-center gap-4 mb-8">
                             <SwissTag color="lime">
                                 <Briefcase className="w-3 h-3 mr-2" />
-                                Work
+                                {t("experience.work")}
                             </SwissTag>
                             <div className="h-px flex-1 bg-[#2a2a2a]" />
                         </div>
@@ -124,7 +127,7 @@ export default function Experience() {
 
                                                 {/* Description */}
                                                 <p className="swiss-body text-[#888] mb-6 leading-relaxed">
-                                                    {exp.description}
+                                                    {t(exp.descriptionKey)}
                                                 </p>
 
                                                 {/* Highlights */}
@@ -153,7 +156,7 @@ export default function Experience() {
                             <div className="flex items-center gap-4 mb-8">
                                 <SwissTag color="cyan">
                                     <GraduationCap className="w-3 h-3 mr-2" />
-                                    Education
+                                    {t("experience.education")}
                                 </SwissTag>
                             </div>
 
@@ -186,7 +189,7 @@ export default function Experience() {
                             <div className="flex items-center gap-4 mb-8">
                                 <SwissTag color="magenta">
                                     <Award className="w-3 h-3 mr-2" />
-                                    Certifications
+                                    {t("experience.certifications")}
                                 </SwissTag>
                             </div>
 

@@ -14,8 +14,10 @@ import {
     CheckCircle,
 } from "lucide-react";
 import { SwissContainer, SwissTag, SwissCard } from "@/components/SwissGrid";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Contact() {
+    const { t } = useLanguage();
     const [formState, setFormState] = useState({
         name: "",
         email: "",
@@ -54,21 +56,21 @@ export default function Contact() {
     const contactInfo = [
         {
             icon: Mail,
-            label: "Email",
+            label: t("contact.email"),
             value: siteConfig.email,
             href: `mailto:${siteConfig.email}`,
             color: "#c6f135",
         },
         {
             icon: Phone,
-            label: "Phone",
+            label: t("contact.phone"),
             value: siteConfig.phone,
             href: `tel:${siteConfig.phone.replace(/\s/g, "")}`,
             color: "#00f5ff",
         },
         {
             icon: MapPin,
-            label: "Location",
+            label: t("contact.location"),
             value: siteConfig.location,
             href: null,
             color: "#ff00ff",

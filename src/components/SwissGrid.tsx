@@ -241,22 +241,27 @@ export function SwissButton({
     children,
     variant = "primary",
     className = "",
-    ...props
+    onClick,
+    type = "button",
+    disabled,
 }: {
     children: ReactNode;
     variant?: "primary" | "outline";
     className?: string;
-} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+    onClick?: () => void;
+    type?: "button" | "submit" | "reset";
+    disabled?: boolean;
+}) {
     const variantClass = variant === "primary" ? "swiss-btn-primary" : "swiss-btn-outline";
 
     return (
-        <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className={`swiss-btn ${variantClass} hoverable ${className}`}
-            {...props}
+        <button
+            className={`swiss-btn ${variantClass} hoverable ${className} transition-transform hover:scale-[1.02] active:scale-[0.98]`}
+            onClick={onClick}
+            type={type}
+            disabled={disabled}
         >
             {children}
-        </motion.button>
+        </button>
     );
 }

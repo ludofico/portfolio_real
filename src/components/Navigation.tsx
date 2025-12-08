@@ -51,78 +51,92 @@ export default function Navigation() {
                 initial={{ y: -100 }}
                 animate={{ y: 0 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
-                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "glass-nav" : ""
-                    }`}
+                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-[#0a0a0a]/95 backdrop-blur-sm border-b border-[#2a2a2a]" : ""}`}
             >
-                <nav className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                    {/* Logo */}
-                    <Link href="#home" className="group hoverable">
-                        <motion.div
-                            whileHover={{ scale: 1.05 }}
-                            className="font-bold text-xl tracking-tighter"
-                        >
-                            <span className="text-white">LV</span>
-                            <span className="text-[#c6f135]">.</span>
-                        </motion.div>
-                    </Link>
-
-                    {/* Desktop Nav Links */}
-                    <div className="hidden md:flex items-center gap-8">
-                        {navItems.map((item) => (
-                            <Link
-                                key={item.name}
-                                href={item.href}
-                                className={`relative text-sm font-medium transition-colors hoverable ${activeSection === item.href.substring(1)
-                                    ? "text-[#c6f135]"
-                                    : "text-white/70 hover:text-white"
-                                    }`}
-                            >
-                                {item.name}
-                                {activeSection === item.href.substring(1) && (
-                                    <motion.div
-                                        layoutId="activeSection"
-                                        className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#c6f135]"
-                                    />
-                                )}
+                <nav className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+                    {/* Main Nav Row */}
+                    <div className="flex items-center justify-between">
+                        {/* Left: Logo + Available Badge */}
+                        <div className="flex items-center gap-4 sm:gap-6">
+                            <Link href="#home" className="group hoverable">
+                                <motion.div
+                                    whileHover={{ scale: 1.05 }}
+                                    className="font-black text-xl sm:text-2xl tracking-tighter"
+                                >
+                                    <span className="text-white">LV</span>
+                                    <span className="text-[#c6f135]">.</span>
+                                </motion.div>
                             </Link>
-                        ))}
-                    </div>
 
-                    {/* Language Toggle + CTA Button */}
-                    <div className="hidden md:flex items-center gap-4">
-                        <LanguageToggle />
-                        <Link
-                            href="#contact"
-                            className="hoverable"
-                        >
-                            <motion.div
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="px-4 py-2 bg-[#c6f135] text-black font-bold text-sm hover:bg-[#00f5ff] transition-colors"
+                            {/* Available Badge - Hidden on mobile */}
+                            <div className="hidden lg:flex items-center gap-2 border-2 border-[#c6f135] px-3 py-1.5 bg-[#0a0a0a]">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full bg-[#c6f135] opacity-75"></span>
+                                    <span className="relative inline-flex h-2 w-2 bg-[#c6f135]"></span>
+                                </span>
+                                <span className="text-[10px] text-white font-bold uppercase tracking-wider">{t("hero.available")}</span>
+                            </div>
+                        </div>
+
+                        {/* Center: Desktop Nav Links */}
+                        <div className="hidden md:flex items-center gap-6 lg:gap-8">
+                            {navItems.map((item) => (
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    className={`relative text-xs sm:text-sm font-bold uppercase tracking-wider transition-colors hoverable ${activeSection === item.href.substring(1)
+                                        ? "text-[#c6f135]"
+                                        : "text-white/70 hover:text-white"
+                                        }`}
+                                >
+                                    {item.name}
+                                    {activeSection === item.href.substring(1) && (
+                                        <motion.div
+                                            layoutId="activeSection"
+                                            className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#c6f135]"
+                                        />
+                                    )}
+                                </Link>
+                            ))}
+                        </div>
+
+                        {/* Right: Language Toggle + CTA */}
+                        <div className="flex items-center gap-3 sm:gap-4">
+                            <LanguageToggle />
+                            <Link
+                                href="#contact"
+                                className="hoverable hidden sm:block"
                             >
-                                LET&apos;S TALK
-                            </motion.div>
-                        </Link>
-                    </div>
+                                <motion.div
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    className="px-4 sm:px-6 py-2 sm:py-3 bg-[#c6f135] text-black font-black text-xs sm:text-sm uppercase tracking-wider border-2 border-[#c6f135] hover:bg-transparent hover:text-[#c6f135] transition-all"
+                                >
+                                    LET&apos;S TALK
+                                </motion.div>
+                            </Link>
 
-                    {/* Mobile Menu Button */}
-                    <button
-                        onClick={() => setIsOpen(!isOpen)}
-                        className="md:hidden relative w-8 h-8 flex flex-col items-center justify-center gap-1.5 hoverable"
-                    >
-                        <motion.span
-                            animate={{ rotate: isOpen ? 45 : 0, y: isOpen ? 6 : 0 }}
-                            className="w-6 h-0.5 bg-white block"
-                        />
-                        <motion.span
-                            animate={{ opacity: isOpen ? 0 : 1 }}
-                            className="w-6 h-0.5 bg-white block"
-                        />
-                        <motion.span
-                            animate={{ rotate: isOpen ? -45 : 0, y: isOpen ? -6 : 0 }}
-                            className="w-6 h-0.5 bg-white block"
-                        />
-                    </button>
+                            {/* Mobile Menu Button */}
+                            <button
+                                onClick={() => setIsOpen(!isOpen)}
+                                className="md:hidden relative w-8 h-8 flex flex-col items-center justify-center gap-1.5 hoverable"
+                                aria-label="Toggle menu"
+                            >
+                                <motion.span
+                                    animate={{ rotate: isOpen ? 45 : 0, y: isOpen ? 6 : 0 }}
+                                    className="w-6 h-0.5 bg-white block"
+                                />
+                                <motion.span
+                                    animate={{ opacity: isOpen ? 0 : 1 }}
+                                    className="w-6 h-0.5 bg-white block"
+                                />
+                                <motion.span
+                                    animate={{ rotate: isOpen ? -45 : 0, y: isOpen ? -6 : 0 }}
+                                    className="w-6 h-0.5 bg-white block"
+                                />
+                            </button>
+                        </div>
+                    </div>
                 </nav>
             </motion.header>
 

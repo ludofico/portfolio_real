@@ -27,7 +27,7 @@ export const experiences = [
         role: "Full-Stack AI Engineer",
         location: "Turin, Italy",
         period: "Sep 2025 - Present",
-        description: `Sviluppo soluzioni full-stack per dashboard operative, landing e sistemi interni integrati con l'ecosistema robotico MakrShakr. Implemento microservizi in Node.js, orchestratori basati su MQTT e server MCP per comunicazione tra robot, cloud e interfacce web. Progetto e sviluppo assistenti vocali realtime con turn detection, VAD e pipeline AI agentiche. Integro architetture GraphRAG per knowledge management e automazioni intelligenti.`,
+        descriptionKey: "experience.makrshakr.description",
         highlights: [
             "Microservizi Node.js",
             "MQTT Orchestration",
@@ -43,8 +43,7 @@ export const experiences = [
         role: "Web Developer",
         location: "Italy",
         period: "Feb 2025 - Jun 2025",
-        description:
-            "Sviluppo full stack, integrazioni AI-RAG, ottimizzazioni SEO/Schemi SGE e automazioni via API e cron-job.",
+        descriptionKey: "experience.leoburnett.description",
         highlights: [
             "Full Stack Development",
             "AI-RAG Integration",
@@ -198,8 +197,7 @@ export const projects = [
     {
         id: 1,
         title: "Voice AI Pipeline",
-        description:
-            "Real-time voice assistant with turn detection, VAD, and agentic AI pipelines for robotic ecosystem integration.",
+        descriptionKey: "projects.voiceai.description",
         tags: ["Node.js", "MQTT", "Voice AI", "GraphRAG"],
         color: "lime",
         featured: true,
@@ -207,8 +205,7 @@ export const projects = [
     {
         id: 2,
         title: "RAG-Powered Search",
-        description:
-            "Enterprise-grade retrieval-augmented generation system for intelligent document search and knowledge management.",
+        descriptionKey: "projects.rag.description",
         tags: ["LangChain", "Pinecone", "Next.js", "Python"],
         color: "cyan",
         featured: true,
@@ -216,8 +213,7 @@ export const projects = [
     {
         id: 3,
         title: "MCP Server Infrastructure",
-        description:
-            "Model Context Protocol servers enabling seamless communication between robots, cloud services, and web interfaces.",
+        descriptionKey: "projects.mcp.description",
         tags: ["MCP", "Node.js", "WebSocket", "Docker"],
         color: "magenta",
         featured: true,
@@ -225,8 +221,7 @@ export const projects = [
     {
         id: 4,
         title: "SEO Automation Suite",
-        description:
-            "Automated SEO optimization tools with SGE-ready schema generation and Core Web Vitals monitoring.",
+        descriptionKey: "projects.seo.description",
         tags: ["SEO", "API", "Automation", "Analytics"],
         color: "orange",
         featured: false,

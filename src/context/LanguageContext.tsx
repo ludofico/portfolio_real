@@ -32,6 +32,7 @@ const translations = {
         "hero.certifications": "Certifications",
         "hero.passion": "Passion",
         "hero.scroll": "Scroll",
+        "hero.description": "Full Stack Developer and Software Architect with a focus on business scalability and AI integration. Specialized in transforming traditional technology stacks into intelligent ecosystems through RAG architectures and advanced automation.",
 
         // About
         "about.title": "About",
@@ -70,12 +71,17 @@ const translations = {
         "experience.work": "Work",
         "experience.education": "Education",
         "experience.certifications": "Certifications",
+        "experience.makrshakr.description": "Developing full-stack solutions for operational dashboards, landing pages, and internal systems integrated with the MakrShakr robotic ecosystem. Implementing Node.js microservices, MQTT-based orchestrators, and MCP servers for robot-cloud-web interface communication. Designing and developing real-time voice assistants with turn detection, VAD, and agentic AI pipelines. Integrating GraphRAG architectures for knowledge management and intelligent automation.",
+        "experience.leoburnett.description": "Full stack development, AI-RAG integrations, SEO/SGE Schema optimizations, and API and cron-job automations.",
 
         // Skills
         "skills.title": "Skills",
         "skills.subtitle": "A comprehensive toolkit spanning frontend, backend, AI, and DevOps technologies.",
         "skills.filter": "Filter",
         "skills.distribution": "Distribution",
+        "skills.3dView": "3D View",
+        "skills.gridView": "Grid View",
+        "skills.categories": "Categories",
 
         // Projects
         "projects.title": "Projects",
@@ -86,6 +92,10 @@ const translations = {
         "projects.viewDetails": "View Details",
         "projects.interested": "Interested in seeing more of my work?",
         "projects.discuss": "Let's Discuss Your Project",
+        "projects.voiceai.description": "Real-time voice assistant with turn detection, VAD, and agentic AI pipelines for robotic ecosystem integration.",
+        "projects.rag.description": "Enterprise-grade retrieval-augmented generation system for intelligent document search and knowledge management.",
+        "projects.mcp.description": "Model Context Protocol servers enabling seamless communication between robots, cloud services, and web interfaces.",
+        "projects.seo.description": "Automated SEO optimization tools with SGE-ready schema generation and Core Web Vitals monitoring.",
 
         // Contact
         "contact.title": "Contact",
@@ -140,6 +150,7 @@ const translations = {
         "hero.certifications": "Certificazioni",
         "hero.passion": "Passione",
         "hero.scroll": "Scorri",
+        "hero.description": "Sviluppatore Full Stack e Architetto Software con focus su scalabilità aziendale e integrazione AI. Specializzato nel trasformare stack tecnologici tradizionali in ecosistemi intelligenti tramite architetture RAG e automazione.",
 
         // About
         "about.title": "Chi Sono",
@@ -178,12 +189,17 @@ const translations = {
         "experience.work": "Lavoro",
         "experience.education": "Formazione",
         "experience.certifications": "Certificazioni",
+        "experience.makrshakr.description": "Sviluppo soluzioni full-stack per dashboard operative, landing e sistemi interni integrati con l'ecosistema robotico MakrShakr. Implemento microservizi in Node.js, orchestratori basati su MQTT e server MCP per comunicazione tra robot, cloud e interfacce web. Progetto e sviluppo assistenti vocali realtime con turn detection, VAD e pipeline AI agentiche. Integro architetture GraphRAG per knowledge management e automazioni intelligenti.",
+        "experience.leoburnett.description": "Sviluppo full stack, integrazioni AI-RAG, ottimizzazioni SEO/Schemi SGE e automazioni via API e cron-job.",
 
         // Skills
         "skills.title": "Competenze",
         "skills.subtitle": "Un toolkit completo che spazia da frontend, backend, AI e tecnologie DevOps.",
         "skills.filter": "Filtra",
         "skills.distribution": "Distribuzione",
+        "skills.3dView": "Vista 3D",
+        "skills.gridView": "Vista Griglia",
+        "skills.categories": "Categorie",
 
         // Projects
         "projects.title": "Progetti",
@@ -194,6 +210,10 @@ const translations = {
         "projects.viewDetails": "Dettagli",
         "projects.interested": "Interessato a vedere altri miei lavori?",
         "projects.discuss": "Discutiamo del Tuo Progetto",
+        "projects.voiceai.description": "Assistente vocale real-time con turn detection, VAD e pipeline AI agentiche per integrazione con ecosistema robotico.",
+        "projects.rag.description": "Sistema RAG enterprise-grade per ricerca intelligente di documenti e gestione della conoscenza.",
+        "projects.mcp.description": "Server Model Context Protocol per comunicazione seamless tra robot, servizi cloud e interfacce web.",
+        "projects.seo.description": "Strumenti automatizzati per ottimizzazione SEO con generazione schema SGE-ready e monitoraggio Core Web Vitals.",
 
         // Contact
         "contact.title": "Contatti",

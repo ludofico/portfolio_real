@@ -5,8 +5,10 @@ import { siteConfig, skills } from "@/lib/data";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import ASCIIText from "@/components/ASCIIText";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Hero() {
+    const { t } = useLanguage();
     const skillsArray = Object.values(skills).flatMap((category) => category.items);
     const marqueeText = skillsArray.slice(0, 8).join(" · ");
 
@@ -31,23 +33,15 @@ export default function Hero() {
             {/* Main Content Container */}
             <div className="swiss-container relative flex-1 flex flex-col justify-center pt-40 lg:pt-48 pb-24">
 
-                {/* ITS: Top Index Row - Moved down with better spacing */}
+                {/* ITS: Top Index Row - cleaner, without availability badge (moved to nav) */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="flex items-center gap-6 mb-20 lg:mb-24"
+                    className="flex items-center gap-6 mb-16 lg:mb-20"
                 >
-                    <span className="its-index">Index 01</span>
-                    <div className="its-rule flex-1 max-w-[200px]" />
-
-                    <div className="ml-auto flex items-center gap-3 glass-card px-4 py-2">
-                        <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#c6f135] opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#c6f135]"></span>
-                        </span>
-                        <span className="its-caption text-[#888]">Available for Work</span>
-                    </div>
+                    <span className="its-index font-black tracking-[0.3em]">INDEX 01</span>
+                    <div className="its-rule flex-1 max-w-[200px] h-1 bg-[#c6f135]" />
                 </motion.div>
 
                 {/* ITS: Main Typography */}
@@ -98,7 +92,7 @@ export default function Hero() {
                         </div>
 
                         <p className="its-body text-[#888] mb-10 max-w-lg">
-                            {siteConfig.description}
+                            {t("hero.description")}
                         </p>
 
                         <div className="flex flex-wrap gap-4">
@@ -108,7 +102,7 @@ export default function Hero() {
                                     whileTap={{ scale: 0.98 }}
                                     className="group flex items-center gap-3 px-8 py-4 bg-[#c6f135] text-black font-bold text-sm tracking-wide uppercase brutal-shadow hover:shadow-none transition-all"
                                 >
-                                    View Projects
+                                    {t("hero.viewProjects")}
                                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                 </motion.div>
                             </Link>
@@ -118,7 +112,7 @@ export default function Hero() {
                                     whileTap={{ scale: 0.98 }}
                                     className="px-8 py-4 brutal-border text-white font-bold text-sm tracking-wide uppercase brutal-hover transition-all"
                                 >
-                                    Get In Touch
+                                    {t("hero.getInTouch")}
                                 </motion.div>
                             </Link>
                         </div>
@@ -134,10 +128,10 @@ export default function Hero() {
 
                         <div className="pattern-card-grid grid-cols-2">
                             {[
-                                { value: "2+", label: "Years Exp" },
-                                { value: "10+", label: "Technologies" },
-                                { value: "5+", label: "Certifications" },
-                                { value: "∞", label: "Passion" },
+                                { value: "2+", label: t("hero.yearsExp") },
+                                { value: "10+", label: t("hero.technologies") },
+                                { value: "5+", label: t("hero.certifications") },
+                                { value: "∞", label: t("hero.passion") },
                             ].map((stat, i) => (
                                 <motion.div
                                     key={stat.label}
@@ -167,7 +161,7 @@ export default function Hero() {
                             transition={{ delay: 1.2 }}
                             className="pattern-info-block"
                         >
-                            <span className="info-label">Location</span>
+                            <span className="info-label">{t("hero.location")}</span>
                             <span className="info-value">{siteConfig.location}</span>
                         </motion.div>
 
@@ -190,7 +184,7 @@ export default function Hero() {
                             transition={{ delay: 1.2 }}
                             className="pattern-info-block text-right"
                         >
-                            <span className="info-label">Year</span>
+                            <span className="info-label">{t("hero.year")}</span>
                             <span className="info-value brutal-mono">{new Date().getFullYear()}</span>
                         </motion.div>
                     </div>
@@ -209,7 +203,7 @@ export default function Hero() {
                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                     className="flex flex-col items-center gap-3 text-[#666]"
                 >
-                    <span className="its-caption tracking-[0.3em]">Scroll</span>
+                    <span className="its-caption tracking-[0.3em]">{t("hero.scroll")}</span>
                     <ArrowDown className="w-4 h-4" />
                 </motion.div>
             </motion.div>

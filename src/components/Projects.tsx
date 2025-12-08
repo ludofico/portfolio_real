@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { projects } from "@/lib/data";
 import { ExternalLink, Github, ArrowUpRight, Sparkles } from "lucide-react";
 import { SwissContainer, SwissTag, SwissCard } from "@/components/SwissGrid";
+import { useLanguage } from "@/context/LanguageContext";
 
 const colorMap: Record<string, string> = {
     lime: "#c6f135",
@@ -16,6 +17,7 @@ const colorMap: Record<string, string> = {
 const filters = ["All", "Featured"];
 
 export default function Projects() {
+    const { t } = useLanguage();
     const [activeFilter, setActiveFilter] = useState("All");
     const [hoveredProject, setHoveredProject] = useState<number | null>(null);
 
@@ -43,12 +45,11 @@ export default function Projects() {
                     </div>
                     <div className="col-span-12 lg:col-span-10">
                         <div className="flex items-center gap-6 mb-6">
-                            <h2 className="swiss-headline">Projects</h2>
+                            <h2 className="swiss-headline">{t("projects.title")}</h2>
                             <div className="h-px flex-1 bg-[#2a2a2a]" />
                         </div>
                         <p className="swiss-body-lg text-[#888] max-w-2xl">
-                            A showcase of projects where I&apos;ve applied AI integration, full-stack development,
-                            and innovative architecture.
+                            {t("projects.subtitle")}
                         </p>
                     </div>
                 </motion.div>
@@ -62,7 +63,7 @@ export default function Projects() {
                     className="grid grid-cols-12 gap-6 mb-12"
                 >
                     <div className="col-span-12 lg:col-span-2">
-                        <span className="swiss-overline text-[#666]">View</span>
+                        <span className="swiss-overline text-[#666]">{t("projects.view")}</span>
                     </div>
                     <div className="col-span-12 lg:col-span-10 flex items-center gap-4">
                         {filters.map((filter) => (
@@ -79,7 +80,7 @@ export default function Projects() {
                                 {filter === "Featured" && (
                                     <Sparkles className="w-3 h-3" />
                                 )}
-                                {filter}
+                                {filter === "All" ? t("projects.all") : t("projects.featured")}
                             </motion.button>
                         ))}
                         <span className="ml-auto swiss-overline text-[#666] tabular-nums">
@@ -170,7 +171,7 @@ export default function Projects() {
                                                 </h3>
 
                                                 <p className="swiss-body text-[#888] mb-6 leading-relaxed">
-                                                    {project.description}
+                                                    {t(project.descriptionKey)}
                                                 </p>
 
                                                 {/* Tags */}

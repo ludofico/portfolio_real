@@ -570,35 +570,61 @@ h3 {
    GLASS MORPHISM EFFECTS
    =================================== */
 
-/* Glass Card - Frosted glass effect */
+/* Glass Card - iOS Liquid Style */
 .glass-card {
-  background: rgba(26, 26, 26, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(20, 20, 20, 0.4);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  transition: all 0.4s cubic-bezier(0.25, 0.4, 0.25, 1);
 }
 
 .glass-card:hover {
-  background: rgba(26, 26, 26, 0.75);
-  border-color: rgba(185, 251, 42, 0.2);
+  background: rgba(30, 30, 30, 0.5);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.4),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 /* Glass Card Light - More transparent */
 .glass-card-light {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-/* Glass Navigation */
+/* Glass Navigation - Brutalist override */
 .glass-nav {
-  background: rgba(10, 10, 10, 0.7);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(10, 10, 10, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 3px solid var(--accent-lime);
+}
+
+/* Brutalist Button */
+.brutal-btn {
+  background: var(--accent-lime);
+  color: var(--background);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 3px solid var(--accent-lime);
+  padding: 1rem 2rem;
+  transition: all 0.15s ease;
+  box-shadow: 4px 4px 0 var(--background), 6px 6px 0 var(--accent-lime);
+}
+
+.brutal-btn:hover {
+  background: transparent;
+  color: var(--accent-lime);
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--background), 0 0 0 var(--accent-lime);
 }
 
 /* Glass Button */

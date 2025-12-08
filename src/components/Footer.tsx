@@ -4,8 +4,10 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { siteConfig } from "@/lib/data";
 import { ArrowUp, Heart, Linkedin, Github, Mail } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Footer() {
+    const { t } = useLanguage();
     const currentYear = new Date().getFullYear();
 
     const scrollToTop = () => {
@@ -13,12 +15,12 @@ export default function Footer() {
     };
 
     const navLinks = [
-        { name: "Home", href: "#home" },
-        { name: "About", href: "#about" },
-        { name: "Experience", href: "#experience" },
-        { name: "Skills", href: "#skills" },
-        { name: "Projects", href: "#projects" },
-        { name: "Contact", href: "#contact" },
+        { name: t("nav.home"), href: "#home" },
+        { name: t("nav.about"), href: "#about" },
+        { name: t("nav.experience"), href: "#experience" },
+        { name: t("nav.skills"), href: "#skills" },
+        { name: t("nav.projects"), href: "#projects" },
+        { name: t("nav.contact"), href: "#contact" },
     ];
 
     return (
@@ -48,8 +50,7 @@ export default function Footer() {
                             </motion.div>
                         </Link>
                         <p className="swiss-body text-[#888] leading-relaxed mb-6 max-w-xs">
-                            Full-Stack AI Engineer specializing in scalable architectures and
-                            intelligent automation solutions.
+                            {t("about.subtitle")}
                         </p>
                         <div className="flex gap-3">
                             <motion.a
