@@ -118,6 +118,15 @@ h3 {
 ::-webkit-scrollbar-thumb {
   background: var(--accent-lime);
   border-radius: 0;
+
+  /* Scrollbar Hide Utility */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 ::-webkit-scrollbar-thumb:hover {

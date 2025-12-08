@@ -223,26 +223,26 @@ function Skills3DScene({ skills, categoryColors }: Skills3DVisualizationProps) {
 // Fallback component when WebGL is not available or context is lost
 function FallbackVisualization({ skills, categoryColors }: Skills3DVisualizationProps) {
     return (
-        <div className="w-full h-[400px] lg:h-[500px] relative bg-[#0a0a0a] border-2 border-[#1f1f1f] flex flex-col items-center justify-center p-8">
-            <div className="text-center mb-8">
-                <p className="swiss-overline text-[#c6f135] mb-2">SKILLS OVERVIEW</p>
-                <p className="swiss-caption text-[#666]">Interactive 3D view unavailable</p>
+        <div className="w-full h-full min-h-[300px] relative bg-[#0a0a0a] border-2 border-[#1f1f1f] flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
+            <div className="text-center mb-4 sm:mb-8">
+                <p className="swiss-overline text-[#c6f135] mb-1 sm:mb-2 text-[10px] sm:text-xs">SKILLS OVERVIEW</p>
+                <p className="swiss-caption text-[#666] text-[10px] sm:text-xs">Interactive 3D view unavailable</p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 w-full max-w-2xl">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 w-full max-w-2xl overflow-y-auto max-h-[200px] sm:max-h-[280px]">
                 {skills.slice(0, 16).map((skill) => (
                     <div
                         key={skill.name}
-                        className="p-3 bg-[#111] border border-[#2a2a2a] hover:border-[#c6f135]/50 transition-colors"
+                        className="p-2 sm:p-3 bg-[#111] border border-[#2a2a2a] hover:border-[#c6f135]/50 transition-colors touch-manipulation"
                     >
-                        <div className="flex items-center gap-2 mb-2">
+                        <div className="flex items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
                             <div
-                                className="w-2 h-2"
+                                className="w-1.5 h-1.5 sm:w-2 sm:h-2 shrink-0"
                                 style={{ backgroundColor: categoryColors[skill.category] || "#c6f135" }}
                             />
-                            <span className="swiss-caption text-white truncate">{skill.name}</span>
+                            <span className="swiss-caption text-white truncate text-[10px] sm:text-xs">{skill.name}</span>
                         </div>
-                        <div className="h-1 bg-[#1a1a1a]">
+                        <div className="h-0.5 sm:h-1 bg-[#1a1a1a]">
                             <div
                                 className="h-full transition-all"
                                 style={{
@@ -255,17 +255,17 @@ function FallbackVisualization({ skills, categoryColors }: Skills3DVisualization
                 ))}
             </div>
 
-            {/* Legend - Brutalist Style */}
-            <div className="absolute bottom-4 left-4 p-4 border-2 border-[#2a2a2a] bg-[#0a0a0a]/90">
-                <p className="swiss-overline text-[#c6f135] mb-2 tracking-widest">CATEGORIES</p>
-                <div className="flex flex-wrap gap-3">
+            {/* Legend - Mobile Responsive */}
+            <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 p-2 sm:p-4 border-2 border-[#2a2a2a] bg-[#0a0a0a]/90 max-w-[calc(100%-1rem)] sm:max-w-none">
+                <p className="swiss-overline text-[#c6f135] mb-1 sm:mb-2 tracking-widest text-[8px] sm:text-[10px]">CATEGORIES</p>
+                <div className="flex flex-wrap gap-1 sm:gap-3">
                     {Object.entries(categoryColors).map(([category, color]) => (
-                        <div key={category} className="flex items-center gap-2">
+                        <div key={category} className="flex items-center gap-1 sm:gap-2">
                             <div
-                                className="w-3 h-3"
+                                className="w-2 h-2 sm:w-3 sm:h-3"
                                 style={{ backgroundColor: color }}
                             />
-                            <span className="swiss-caption text-[#888] uppercase tracking-wide">{category}</span>
+                            <span className="swiss-caption text-[#888] uppercase tracking-wide text-[8px] sm:text-[10px]">{category}</span>
                         </div>
                     ))}
                 </div>
@@ -278,13 +278,21 @@ export default function Skills3DVisualization({ skills, categoryColors }: Skills
     const [webGLSupported, setWebGLSupported] = useState<boolean | null>(null);
     const [contextLost, setContextLost] = useState(false);
     const [mounted, setMounted] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
         setMounted(true);
         setWebGLSupported(isWebGLAvailable());
+        setIsMobile(window.innerWidth < 640);
 
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 640);
+        };
+
+        window.addEventListener('resize', handleResize);
         return () => {
             setMounted(false);
+            window.removeEventListener('resize', handleResize);
         };
     }, []);
 
@@ -295,7 +303,7 @@ export default function Skills3DVisualization({ skills, categoryColors }: Skills
     // Show nothing during SSR
     if (!mounted) {
         return (
-            <div className="w-full h-[400px] lg:h-[500px] relative animate-pulse" />
+            <div className="w-full h-[300px] sm:h-[400px] lg:h-[500px] relative animate-pulse" />
         );
     }
 
@@ -305,29 +313,27 @@ export default function Skills3DVisualization({ skills, categoryColors }: Skills
     }
 
     return (
-        <div className="w-full h-[400px] lg:h-[500px] relative" style={{ background: 'transparent' }}>
+        <div className="w-full h-full relative" style={{ background: 'transparent' }}>
             <Canvas
-                camera={{ position: [0, 0, 10], fov: 50 }}
+                camera={{ position: [0, 0, isMobile ? 12 : 10], fov: isMobile ? 60 : 50 }}
                 gl={{
-                    antialias: true,
+                    antialias: !isMobile, // Disable antialiasing on mobile for performance
                     alpha: true,
-                    powerPreference: "high-performance",
-                    failIfMajorPerformanceCaveat: false,
+                    powerPreference: isMobile ? "low-power" : "high-performance",
+                    failIfMajorPerformanceCaveat: true, // Fail gracefully on weak devices
                 }}
                 style={{ background: 'transparent' }}
-                dpr={[1, 1.5]} // Limit pixel ratio for performance
-                frameloop="always" // Keep rendering for auto-rotation
+                dpr={isMobile ? 1 : [1, 1.5]} // Lower DPR on mobile
+                frameloop="always"
                 onCreated={({ gl }) => {
-                    // Optimize renderer settings - keep transparent
                     gl.setClearColor(0x000000, 0);
                 }}
             >
                 <ContextLossHandler onContextLost={handleContextLost} />
 
-                <ambientLight intensity={0.3} />
-                <pointLight position={[10, 10, 10]} intensity={1} color="#c6f135" />
-                <pointLight position={[-10, -10, -10]} intensity={0.5} color="#00f5ff" />
-                <pointLight position={[0, 10, 0]} intensity={0.5} color="#ff00ff" />
+                <ambientLight intensity={0.4} />
+                <pointLight position={[10, 10, 10]} intensity={0.8} color="#c6f135" />
+                <pointLight position={[-10, -10, -10]} intensity={0.4} color="#00f5ff" />
 
                 <Skills3DScene skills={skills} categoryColors={categoryColors} />
 
@@ -335,23 +341,24 @@ export default function Skills3DVisualization({ skills, categoryColors }: Skills
                     enableZoom={false}
                     enablePan={false}
                     autoRotate
-                    autoRotateSpeed={0.5}
+                    autoRotateSpeed={isMobile ? 0.3 : 0.5}
                     maxPolarAngle={Math.PI / 1.5}
                     minPolarAngle={Math.PI / 3}
+                    touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN }}
                 />
             </Canvas>
 
-            {/* Legend - Brutalist Style */}
-            <div className="absolute bottom-4 left-4 p-4 border-2 border-[#2a2a2a] bg-[#0a0a0a]/90 backdrop-blur-sm">
-                <p className="swiss-overline text-[#c6f135] mb-2 tracking-widest">CATEGORIES</p>
-                <div className="flex flex-wrap gap-3">
+            {/* Legend - Mobile Responsive */}
+            <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 p-2 sm:p-4 border-2 border-[#2a2a2a] bg-[#0a0a0a]/90 backdrop-blur-sm max-w-[calc(100%-1rem)] sm:max-w-none">
+                <p className="swiss-overline text-[#c6f135] mb-1 sm:mb-2 tracking-widest text-[8px] sm:text-[10px]">CATEGORIES</p>
+                <div className="flex flex-wrap gap-1 sm:gap-3">
                     {Object.entries(categoryColors).map(([category, color]) => (
-                        <div key={category} className="flex items-center gap-2">
+                        <div key={category} className="flex items-center gap-1 sm:gap-2">
                             <div
-                                className="w-3 h-3"
+                                className="w-2 h-2 sm:w-3 sm:h-3"
                                 style={{ backgroundColor: color }}
                             />
-                            <span className="swiss-caption text-[#888] uppercase tracking-wide">{category}</span>
+                            <span className="swiss-caption text-[#888] uppercase tracking-wide text-[8px] sm:text-[10px]">{category}</span>
                         </div>
                     ))}
                 </div>

@@ -50,6 +50,10 @@ export const metadata: Metadata = {
     description:
       "Sviluppatore Full Stack e Architetto Software specializzato in AI e automazione.",
   },
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
   robots: {
     index: true,
     follow: true,
