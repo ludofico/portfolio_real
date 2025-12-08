@@ -1,0 +1,1207 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+  --accent-lime: #b9fb2a;
+  --accent-cyan: #00f5ff;
+  --accent-magenta: #ff00ff;
+  --accent-orange: #ff6b35;
+  --muted: #1a1a1a;
+  --muted-foreground: #888888;
+  --border: #2a2a2a;
+
+  /* Swiss Design Grid System */
+  --grid-unit: 8px;
+  --grid-columns: 12;
+  --grid-gutter: 24px;
+  --grid-margin: 48px;
+  --baseline: 8px;
+
+  /* Modular Scale (1.25 ratio - Major Third) */
+  --scale-xs: 0.64rem; /* 10.24px */
+  --scale-sm: 0.8rem; /* 12.8px */
+  --scale-base: 1rem; /* 16px */
+  --scale-md: 1.25rem; /* 20px */
+  --scale-lg: 1.563rem; /* 25px */
+  --scale-xl: 1.953rem; /* 31.25px */
+  --scale-2xl: 2.441rem; /* 39px */
+  --scale-3xl: 3.052rem; /* 48.8px */
+  --scale-4xl: 3.815rem; /* 61px */
+  --scale-5xl: 4.768rem; /* 76.3px */
+  --scale-6xl: 5.96rem; /* 95.4px */
+  --scale-7xl: 7.451rem; /* 119.2px */
+
+  /* Swiss Spacing Scale (8px baseline) */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-8: 64px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-16: 128px;
+  --space-20: 160px;
+  --space-24: 192px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent-lime: var(--accent-lime);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-accent-magenta: var(--accent-magenta);
+  --color-accent-orange: var(--accent-orange);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  cursor: none;
+}
+
+::selection {
+  background: var(--accent-lime);
+  color: var(--background);
+}
+
+html {
+  scroll-behavior: auto; /* Lenis handles smooth scrolling */
+  font-size: 16px;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  overflow-x: hidden;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+/* Swiss Design Typography Scale */
+h1 {
+  font-size: clamp(3rem, 10vw, 8rem);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+
+h2 {
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+h3 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-lime);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-cyan);
+}
+
+/* Noise texture overlay */
+.noise {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Glitch effect */
+@keyframes glitch {
+  0%,
+  100% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+}
+
+.glitch:hover {
+  animation: glitch 0.3s ease infinite;
+}
+
+/* Text gradient animation */
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.gradient-text {
+  background: linear-gradient(
+    90deg,
+    var(--accent-lime),
+    var(--accent-cyan),
+    var(--accent-magenta),
+    var(--accent-lime)
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 6s ease infinite;
+}
+
+/* Brutalist grid lines */
+.grid-lines {
+  background-image: linear-gradient(
+      to right,
+      var(--border) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* Swiss Design Grid - Smaller */
+.swiss-grid {
+  background-image: linear-gradient(
+      to right,
+      rgba(185, 251, 42, 0.05) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(185, 251, 42, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Marquee animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+/* Magnetic button effect */
+.magnetic {
+  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Border animation */
+@keyframes border-dance {
+  0%,
+  100% {
+    clip-path: inset(0 0 98% 0);
+  }
+  25% {
+    clip-path: inset(0 98% 0 0);
+  }
+  50% {
+    clip-path: inset(98% 0 0 0);
+  }
+  75% {
+    clip-path: inset(0 0 0 98%);
+  }
+}
+
+.border-animate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--accent-lime);
+  animation: border-dance 4s linear infinite;
+}
+
+/* Link hover effect */
+.link-hover {
+  position: relative;
+}
+
+.link-hover::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent-lime);
+  transition: width 0.3s ease;
+}
+
+.link-hover:hover::after {
+  width: 100%;
+}
+
+/* Card hover lift */
+.card-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: 8px 8px 0 var(--accent-lime);
+}
+
+/* Stagger animations */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s ease forwards;
+}
+
+/* Pulse ring */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.pulse-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--accent-lime);
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+/* ===================================
+   SWISS DESIGN SYSTEM
+   =================================== */
+
+/* Swiss Grid Container */
+.swiss-container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+@media (min-width: 768px) {
+  .swiss-container {
+    padding: 0 var(--space-8);
+  }
+}
+
+@media (min-width: 1024px) {
+  .swiss-container {
+    padding: 0 var(--space-12);
+  }
+}
+
+/* 12-Column Grid */
+.swiss-grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--grid-gutter);
+}
+
+/* 6-Column Grid */
+.swiss-grid-6 {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--grid-gutter);
+}
+
+/* 4-Column Grid */
+.swiss-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--grid-gutter);
+}
+
+/* Column Spans */
+.col-span-1 {
+  grid-column: span 1;
+}
+.col-span-2 {
+  grid-column: span 2;
+}
+.col-span-3 {
+  grid-column: span 3;
+}
+.col-span-4 {
+  grid-column: span 4;
+}
+.col-span-5 {
+  grid-column: span 5;
+}
+.col-span-6 {
+  grid-column: span 6;
+}
+.col-span-7 {
+  grid-column: span 7;
+}
+.col-span-8 {
+  grid-column: span 8;
+}
+.col-span-9 {
+  grid-column: span 9;
+}
+.col-span-10 {
+  grid-column: span 10;
+}
+.col-span-11 {
+  grid-column: span 11;
+}
+.col-span-12 {
+  grid-column: span 12;
+}
+
+/* Column Start */
+.col-start-1 {
+  grid-column-start: 1;
+}
+.col-start-2 {
+  grid-column-start: 2;
+}
+.col-start-3 {
+  grid-column-start: 3;
+}
+.col-start-4 {
+  grid-column-start: 4;
+}
+.col-start-5 {
+  grid-column-start: 5;
+}
+.col-start-6 {
+  grid-column-start: 6;
+}
+.col-start-7 {
+  grid-column-start: 7;
+}
+.col-start-8 {
+  grid-column-start: 8;
+}
+.col-start-9 {
+  grid-column-start: 9;
+}
+
+/* Swiss Typography */
+.swiss-display {
+  font-size: var(--scale-7xl);
+  font-weight: 900;
+  line-height: 0.85;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+}
+
+.swiss-headline {
+  font-size: var(--scale-5xl);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+
+.swiss-title {
+  font-size: var(--scale-3xl);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.swiss-subtitle {
+  font-size: var(--scale-xl);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.swiss-body {
+  font-size: var(--scale-base);
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+.swiss-body-lg {
+  font-size: var(--scale-md);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+.swiss-caption {
+  font-size: var(--scale-sm);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.swiss-overline {
+  font-size: var(--scale-xs);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* Swiss Dividers */
+.swiss-divider {
+  height: 1px;
+  background: var(--border);
+  width: 100%;
+}
+
+.swiss-divider-accent {
+  height: 2px;
+  background: var(--accent-lime);
+  width: 64px;
+}
+
+.swiss-divider-thick {
+  height: 4px;
+  background: var(--foreground);
+  width: 100%;
+}
+
+/* Swiss Sections with Baseline Grid Alignment */
+.swiss-section {
+  padding-top: var(--space-16);
+  padding-bottom: var(--space-16);
+}
+
+.swiss-section-lg {
+  padding-top: var(--space-24);
+  padding-bottom: var(--space-24);
+}
+
+/* Swiss Design Grid Overlay (Debug) */
+.swiss-grid-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.08;
+  background-image: linear-gradient(
+      to right,
+      var(--accent-lime) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: calc((100% - var(--space-12) * 2) / 12) var(--baseline);
+  background-position: var(--space-12) 0;
+}
+
+/* Swiss Number Index */
+.swiss-number {
+  font-size: var(--scale-7xl);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  -webkit-text-stroke: 1px var(--accent-lime);
+  -webkit-text-fill-color: transparent;
+  opacity: 0.3;
+}
+
+/* Swiss Cards */
+.swiss-card {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  padding: var(--space-4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.swiss-card:hover {
+  border-color: var(--accent-lime);
+  transform: translateY(-4px);
+}
+
+.swiss-card-bordered {
+  border-left: 4px solid var(--accent-lime);
+}
+
+/* ===================================
+   GLASS MORPHISM EFFECTS
+   =================================== */
+
+/* Glass Card - Frosted glass effect */
+.glass-card {
+  background: rgba(26, 26, 26, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.glass-card:hover {
+  background: rgba(26, 26, 26, 0.75);
+  border-color: rgba(185, 251, 42, 0.2);
+}
+
+/* Glass Card Light - More transparent */
+.glass-card-light {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Glass Navigation */
+.glass-nav {
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Glass Button */
+.glass-btn {
+  background: rgba(185, 251, 42, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(185, 251, 42, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-btn:hover {
+  background: rgba(185, 251, 42, 0.2);
+  border-color: rgba(185, 251, 42, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(185, 251, 42, 0.15);
+}
+
+/* ===================================
+   ENHANCED MICROINTERACTIONS
+   =================================== */
+
+/* Magnetic button hover */
+.magnetic-btn {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+/* Scale on hover */
+.hover-scale {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+/* Glow effect on hover */
+.hover-glow {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 30px rgba(185, 251, 42, 0.15);
+  border-color: rgba(185, 251, 42, 0.3);
+}
+
+/* Text reveal animation */
+@keyframes text-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.text-reveal {
+  animation: text-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Floating animation */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Shimmer effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+/* Border glow pulse */
+@keyframes border-glow {
+  0%,
+  100% {
+    border-color: rgba(185, 251, 42, 0.2);
+    box-shadow: 0 0 20px rgba(185, 251, 42, 0.1);
+  }
+  50% {
+    border-color: rgba(185, 251, 42, 0.5);
+    box-shadow: 0 0 40px rgba(185, 251, 42, 0.2);
+  }
+}
+
+.border-glow-pulse {
+  animation: border-glow 3s ease-in-out infinite;
+}
+
+/* Swiss Buttons */
+.swiss-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--scale-sm);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.swiss-btn-primary {
+  background: var(--accent-lime);
+  color: var(--background);
+  border-color: var(--accent-lime);
+}
+
+.swiss-btn-primary:hover {
+  background: transparent;
+  color: var(--accent-lime);
+}
+
+.swiss-btn-outline {
+  background: transparent;
+  color: var(--foreground);
+  border-color: var(--foreground);
+}
+
+.swiss-btn-outline:hover {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+/* Swiss Label/Tag */
+.swiss-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--scale-xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgba(185, 251, 42, 0.1);
+  color: var(--accent-lime);
+  border: 1px solid rgba(185, 251, 42, 0.2);
+}
+
+/* Swiss Section Numbers */
+.section-number {
+  font-family: var(--font-mono);
+  font-size: var(--scale-sm);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  color: var(--accent-lime);
+}
+
+/* ===================================
+   INTERNATIONAL TYPOGRAPHIC STYLE
+   Müller-Brockmann / Emil Ruder Inspired
+   =================================== */
+
+/* ITS Core: Mathematical Grid Overlay */
+.its-grid-baseline {
+  background-image: linear-gradient(
+    to bottom,
+    rgba(185, 251, 42, 0.03) 1px,
+    transparent 1px
+  );
+  background-size: 100% var(--baseline);
+}
+
+/* ITS: Flush Left, Ragged Right Text (Core Principle) */
+.its-flush-left {
+  text-align: left;
+  hyphens: none;
+  word-spacing: normal;
+}
+
+/* ITS: Objective Typography - Clear Hierarchies */
+.its-display {
+  font-size: clamp(4rem, 12vw, 10rem);
+  font-weight: 900;
+  line-height: 0.85;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+  /* Brutalist touch: harsh, commanding */
+}
+
+.its-headline {
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+
+.its-subhead {
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.its-body {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.618; /* Golden ratio line-height */
+  letter-spacing: 0;
+}
+
+.its-caption {
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ITS: Index Numbers (Müller-Brockmann Style) */
+.its-index {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  color: var(--accent-lime);
+  text-transform: uppercase;
+}
+
+/* ITS: Large Display Numbers */
+.its-number-display {
+  font-size: clamp(8rem, 20vw, 16rem);
+  font-weight: 900;
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  -webkit-text-stroke: 2px currentColor;
+  -webkit-text-fill-color: transparent;
+  opacity: 0.1;
+}
+
+/* ITS: Ruled Lines (Swiss Tradition) */
+.its-rule {
+  height: 1px;
+  background: var(--border);
+  border: none;
+}
+
+.its-rule-accent {
+  height: 2px;
+  background: var(--accent-lime);
+  border: none;
+}
+
+.its-rule-thick {
+  height: 4px;
+  background: currentColor;
+  border: none;
+}
+
+/* ITS: Asymmetric Layout Helpers */
+.its-offset-left {
+  margin-left: calc(100% / 12 * 2);
+}
+
+.its-offset-right {
+  margin-right: calc(100% / 12 * 2);
+}
+
+/* ITS + Brutalism: Block Elements */
+.its-block {
+  display: block;
+  padding: var(--space-6);
+  background: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.its-block-accent {
+  border-left: 4px solid var(--accent-lime);
+  padding-left: var(--space-4);
+}
+
+/* ITS: Systematic Color Application */
+.its-color-primary {
+  color: var(--accent-lime);
+}
+
+.its-color-secondary {
+  color: var(--accent-cyan);
+}
+
+.its-color-tertiary {
+  color: var(--accent-magenta);
+}
+
+.its-bg-primary {
+  background-color: var(--accent-lime);
+  color: var(--background);
+}
+
+/* ITS: Geometric Shapes (Constructivist Influence) */
+.its-circle {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-lime);
+}
+
+.its-square {
+  width: 8px;
+  height: 8px;
+  background: var(--accent-lime);
+}
+
+.its-line-h {
+  height: 1px;
+  background: var(--accent-lime);
+}
+
+.its-line-v {
+  width: 1px;
+  background: var(--accent-lime);
+}
+
+/* ITS: Information Hierarchy Indicators */
+.its-marker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.its-marker::before {
+  content: "";
+  width: 12px;
+  height: 2px;
+  background: var(--accent-lime);
+}
+
+/* ITS: Section Dividers (Objective Clarity) */
+.its-section-break {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-4);
+  align-items: center;
+  margin: var(--space-8) 0;
+}
+
+.its-section-break::after {
+  content: "";
+  height: 1px;
+  background: var(--border);
+}
+
+/* ITS: Label System */
+.its-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 4px 12px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 1px solid currentColor;
+}
+
+.its-label-filled {
+  background: var(--accent-lime);
+  color: var(--background);
+  border-color: var(--accent-lime);
+}
+
+/* ===================================
+   BRUTALIST ENHANCEMENTS
+   Raw, Honest, Functional
+   =================================== */
+
+/* Brutalist: Raw Border Treatment */
+.brutal-border {
+  border: 2px solid var(--foreground);
+}
+
+.brutal-border-thick {
+  border: 4px solid var(--foreground);
+}
+
+/* Brutalist: Offset Shadow (Anti-3D) */
+.brutal-shadow {
+  box-shadow: 4px 4px 0 var(--accent-lime);
+}
+
+.brutal-shadow-lg {
+  box-shadow: 8px 8px 0 var(--accent-lime);
+}
+
+/* Brutalist: Stark Contrast Hover */
+.brutal-hover:hover {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+/* Brutalist: Monospace Numbers */
+.brutal-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Brutalist: Text Transform */
+.brutal-caps {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Brutalist: Strike Element */
+.brutal-strike {
+  position: relative;
+}
+
+.brutal-strike::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: var(--accent-lime);
+  transform: rotate(-2deg);
+}
+
+/* ===================================
+   COMBINED ITS + BRUTALISM PATTERNS
+   =================================== */
+
+/* Pattern: Section Header (Müller-Brockmann meets Brutalism) */
+.pattern-section-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-6);
+  align-items: start;
+  margin-bottom: var(--space-12);
+}
+
+.pattern-section-header .section-index {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  color: var(--accent-lime);
+  padding-top: 0.75rem;
+}
+
+.pattern-section-header .section-title {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+
+/* Pattern: Info Block (Swiss Objectivity) */
+.pattern-info-block {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-1);
+}
+
+.pattern-info-block .info-label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.pattern-info-block .info-value {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+/* Pattern: Timeline Entry */
+.pattern-timeline {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-4);
+}
+
+.pattern-timeline .timeline-marker {
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent-lime), var(--border));
+}
+
+/* Pattern: Stat Display (Swiss Precision) */
+.pattern-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.pattern-stat .stat-value {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--accent-lime);
+}
+
+.pattern-stat .stat-label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+/* Pattern: Card Grid */
+.pattern-card-grid {
+  display: grid;
+  gap: 1px;
+  background: var(--border);
+}
+
+.pattern-card-grid > * {
+  background: var(--background);
+  padding: var(--space-4);
+}
+
+/* Responsive Grid Breakpoints */
+@media (max-width: 1024px) {
+  .lg\:col-span-6 {
+    grid-column: span 6;
+  }
+  .lg\:col-span-8 {
+    grid-column: span 8;
+  }
+  .lg\:col-span-4 {
+    grid-column: span 4;
+  }
+
+  .its-offset-left,
+  .its-offset-right {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .swiss-grid-12,
+  .swiss-grid-6 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .md\:col-span-4 {
+    grid-column: span 4;
+  }
+
+  .swiss-display {
+    font-size: var(--scale-5xl);
+  }
+
+  .swiss-headline {
+    font-size: var(--scale-4xl);
+  }
+
+  .its-display {
+    font-size: clamp(3rem, 10vw, 6rem);
+  }
+
+  .its-number-display {
+    font-size: clamp(5rem, 15vw, 10rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .swiss-grid-12,
+  .swiss-grid-6,
+  .swiss-grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .swiss-display {
+    font-size: var(--scale-4xl);
+  }
+
+  .swiss-headline {
+    font-size: var(--scale-3xl);
+  }
+}
