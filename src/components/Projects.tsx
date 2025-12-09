@@ -193,7 +193,9 @@ export default function Projects() {
                                                         className="flex items-center gap-2 swiss-overline transition-colors hoverable"
                                                         style={{ color: colorMap[project.color] }}
                                                     >
-                                                        View Details
+                                                        <a href={project.link} target="_blank" rel="noopener noreferrer">
+                                                            View Details
+                                                        </a> 
                                                         <ArrowUpRight className="w-4 h-4" />
                                                     </motion.button>
 

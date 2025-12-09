@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { skills } from "@/lib/data";
 import { SwissContainer, SwissTag } from "@/components/SwissGrid";
@@ -30,7 +30,24 @@ export default function Skills() {
     const { t } = useLanguage();
     const [activeCategory, setActiveCategory] = useState(categories[0]);
     const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
-    const [viewMode, setViewMode] = useState<"grid" | "3d">("3d");
+    const [viewMode, setViewMode] = useState<"grid" | "3d">("grid");
+    const [isMobile, setIsMobile] = useState(true); // Default to mobile to prevent 3D flash
+
+    // Detect mobile on mount and disable 3D on mobile
+    useEffect(() => {
+        const checkMobile = () => {
+            const mobile = window.innerWidth < 1024;
+            setIsMobile(mobile);
+            // Force grid view on mobile
+            if (mobile) {
+                setViewMode("grid");
+            }
+        };
+        
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
 
     // Build the skills list with proper color mapping
     const skillsList = Object.entries(skills).flatMap(([category, data]) =>
@@ -70,33 +87,35 @@ export default function Skills() {
                                 <div className="h-px w-12 sm:w-20 bg-[#2a2a2a] hidden sm:block" />
                             </div>
 
-                            {/* Carousel Navigation Arrows - Mobile Optimized */}
-                            <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">
-                                <span className="swiss-overline text-[#666] text-[10px] sm:text-xs">
-                                    {viewMode === "grid" ? "GRID" : "3D"}
-                                </span>
-                                <div className="flex items-center">
-                                    <button
-                                        onClick={() => setViewMode(viewMode === "grid" ? "3d" : "grid")}
-                                        className="p-2 sm:p-3 border-2 border-[#2a2a2a] bg-[#0a0a0a] text-[#888] hover:text-[#c6f135] hover:border-[#c6f135] active:bg-[#1a1a1a] transition-all touch-manipulation"
-                                        aria-label="Previous view"
-                                    >
-                                        <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-                                    </button>
-                                    <div className="px-3 sm:px-4 py-2 sm:py-3 border-y-2 border-[#2a2a2a] bg-[#0a0a0a] min-w-[50px] sm:min-w-[60px] text-center">
-                                        <span className="swiss-overline text-[#c6f135] text-[10px] sm:text-xs">
-                                            {viewMode === "grid" ? "1" : "2"}/2
-                                        </span>
+                            {/* Carousel Navigation Arrows - Hidden on mobile since 3D is disabled */}
+                            {!isMobile && (
+                                <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">
+                                    <span className="swiss-overline text-[#666] text-[10px] sm:text-xs">
+                                        {viewMode === "grid" ? "GRID" : "3D"}
+                                    </span>
+                                    <div className="flex items-center">
+                                        <button
+                                            onClick={() => setViewMode(viewMode === "grid" ? "3d" : "grid")}
+                                            className="p-2 sm:p-3 border-2 border-[#2a2a2a] bg-[#0a0a0a] text-[#888] hover:text-[#c6f135] hover:border-[#c6f135] active:bg-[#1a1a1a] transition-all touch-manipulation"
+                                            aria-label="Previous view"
+                                        >
+                                            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                                        </button>
+                                        <div className="px-3 sm:px-4 py-2 sm:py-3 border-y-2 border-[#2a2a2a] bg-[#0a0a0a] min-w-[50px] sm:min-w-[60px] text-center">
+                                            <span className="swiss-overline text-[#c6f135] text-[10px] sm:text-xs">
+                                                {viewMode === "grid" ? "1" : "2"}/2
+                                            </span>
+                                        </div>
+                                        <button
+                                            onClick={() => setViewMode(viewMode === "grid" ? "3d" : "grid")}
+                                            className="p-2 sm:p-3 border-2 border-[#2a2a2a] bg-[#0a0a0a] text-[#888] hover:text-[#c6f135] hover:border-[#c6f135] active:bg-[#1a1a1a] transition-all touch-manipulation"
+                                            aria-label="Next view"
+                                        >
+                                            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                                        </button>
                                     </div>
-                                    <button
-                                        onClick={() => setViewMode(viewMode === "grid" ? "3d" : "grid")}
-                                        className="p-2 sm:p-3 border-2 border-[#2a2a2a] bg-[#0a0a0a] text-[#888] hover:text-[#c6f135] hover:border-[#c6f135] active:bg-[#1a1a1a] transition-all touch-manipulation"
-                                        aria-label="Next view"
-                                    >
-                                        <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
-                                    </button>
                                 </div>
-                            </div>
+                            )}
                         </div>
                         <p className="swiss-body-lg text-[#888] max-w-2xl text-sm sm:text-base">
                             {t("skills.subtitle")}

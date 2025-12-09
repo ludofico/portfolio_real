@@ -214,8 +214,8 @@ export default function Experience() {
                                             >
                                                 {/* Mobile: Vertical card with large badge */}
                                                 <div className="lg:hidden relative">
-                                                    <div 
-                                                        className="aspect-square w-full flex items-center justify-center p-3"
+                                                    <div
+                                                        className="aspect-square w-full flex items-center justify-center p-1 "
                                                         style={{ backgroundColor: `${cert.color}10` }}
                                                     >
                                                         {cert.image && (
@@ -236,7 +236,7 @@ export default function Experience() {
                                                         <p className="text-[#666] mt-1 text-[8px] sm:text-[10px] uppercase tracking-wider">{cert.issuer}</p>
                                                     </div>
                                                 </div>
-                                                
+
                                                 {/* Desktop: Horizontal layout */}
                                                 <div className="hidden lg:flex items-center gap-4 p-4">
                                                     <div
@@ -267,8 +267,8 @@ export default function Experience() {
                                             <div className="block glass-card hover:border-[#ff00ff]/30 transition-all overflow-hidden">
                                                 {/* Mobile: Vertical card with large badge */}
                                                 <div className="lg:hidden relative">
-                                                    <div 
-                                                        className="aspect-square w-full flex items-center justify-center p-3"
+                                                    <div
+                                                        className="aspect-square w-full flex items-center justify-center p-1"
                                                         style={{ backgroundColor: `${cert.color}10` }}
                                                     >
                                                         {cert.image && (
@@ -289,7 +289,7 @@ export default function Experience() {
                                                         <p className="text-[#666] mt-1 text-[8px] sm:text-[10px] uppercase tracking-wider">{cert.issuer}</p>
                                                     </div>
                                                 </div>
-                                                
+
                                                 {/* Desktop: Horizontal layout */}
                                                 <div className="hidden lg:flex items-center gap-4 p-4">
                                                     <div
