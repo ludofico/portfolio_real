@@ -2,129 +2,93 @@
 
 import { useRef, useMemo, useState, useEffect, useCallback } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Text, Float, OrbitControls, Line } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 
-// Check if WebGL is available
+const SWISS_COLORS = {
+    lime: "#d4ff4d",
+    cyan: "#4df5ff",
+    magenta: "#ff4dff",
+    orange: "#ff8f5d",
+    white: "#ffffff",
+};
+
+// Detect mobile device
+function isMobileDevice(): boolean {
+    if (typeof window === "undefined") return false;
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+        || window.innerWidth < 768;
+}
+
 function isWebGLAvailable(): boolean {
     if (typeof window === "undefined") return false;
     try {
         const canvas = document.createElement("canvas");
-        return !!(
-            window.WebGLRenderingContext &&
-            (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
-        );
+        const ctx = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+        return !!ctx;
     } catch {
         return false;
     }
 }
 
-// Context loss handler component
-function ContextLossHandler({ onContextLost }: { onContextLost: () => void }) {
-    const { gl } = useThree();
-
-    useEffect(() => {
-        const canvas = gl.domElement;
-
-        const handleContextLost = (event: Event) => {
-            event.preventDefault();
-            console.warn("WebGL context lost");
-            onContextLost();
-        };
-
-        const handleContextRestored = () => {
-            console.log("WebGL context restored");
-        };
-
-        canvas.addEventListener("webglcontextlost", handleContextLost);
-        canvas.addEventListener("webglcontextrestored", handleContextRestored);
-
-        return () => {
-            canvas.removeEventListener("webglcontextlost", handleContextLost);
-            canvas.removeEventListener("webglcontextrestored", handleContextRestored);
-        };
-    }, [gl, onContextLost]);
-
-    return null;
+function getLighterColor(color: string): string {
+    const colorMap: Record<string, string> = {
+        "#c6f135": SWISS_COLORS.lime,
+        "#00f5ff": SWISS_COLORS.cyan,
+        "#ff00ff": SWISS_COLORS.magenta,
+        "#ff6b35": SWISS_COLORS.orange,
+    };
+    return colorMap[color] || color;
 }
 
 interface Skill3DNodeProps {
     position: [number, number, number];
-    label: string;
     color: string;
     size: number;
-    isHovered: boolean;
-    onHover: (hovered: boolean) => void;
+    name: string;
+    onHover: (name: string | null, screenPos: { x: number; y: number } | null) => void;
 }
 
-function Skill3DNode({ position, label, color, size, isHovered, onHover }: Skill3DNodeProps) {
+// Node with hover - uses pointer events, no dynamic 3D components
+function Skill3DNode({ position, color, size, name, onHover }: Skill3DNodeProps) {
+    const lighterColor = getLighterColor(color);
     const meshRef = useRef<THREE.Mesh>(null);
-    const [hovered, setHovered] = useState(false);
+    const { camera, size: canvasSize } = useThree();
+    const [isHovered, setIsHovered] = useState(false);
 
-    useFrame((state) => {
+    const handlePointerOver = useCallback(() => {
+        setIsHovered(true);
         if (meshRef.current) {
-            meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
-            meshRef.current.rotation.y += 0.005;
-
-            // Scale animation on hover
-            const targetScale = hovered || isHovered ? 1.3 : 1;
-            meshRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
+            const vector = new THREE.Vector3();
+            meshRef.current.getWorldPosition(vector);
+            vector.project(camera);
+            const x = (vector.x * 0.5 + 0.5) * canvasSize.width;
+            const y = (-vector.y * 0.5 + 0.5) * canvasSize.height;
+            onHover(name, { x, y });
         }
-    });
+    }, [camera, canvasSize, name, onHover]);
+
+    const handlePointerOut = useCallback(() => {
+        setIsHovered(false);
+        onHover(null, null);
+    }, [onHover]);
 
     return (
-        <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-            <group position={position}>
-                <mesh
-                    ref={meshRef}
-                    onPointerEnter={() => { setHovered(true); onHover(true); }}
-                    onPointerLeave={() => { setHovered(false); onHover(false); }}
-                >
-                    <icosahedronGeometry args={[size, 1]} />
-                    <meshStandardMaterial
-                        color={color}
-                        emissive={color}
-                        emissiveIntensity={hovered ? 0.8 : 0.6}
-                        metalness={0.2}
-                        roughness={0.2}
-                        transparent
-                        opacity={hovered ? 1 : 0.8}
-                    />
-                </mesh>
-
-                {/* Label */}
-                {hovered && (
-                    <Text
-                        position={[0, size + 0.5, 0]}
-                        fontSize={0.3}
-                        color="white"
-                        anchorX="center"
-                        anchorY="middle"
-                        font="./fonts/Bebas_Neue,Inter/Inter/Inter-VariableFont_opsz,wght.ttf"
-                    >
-                        {label}
-                    </Text>
-                )}
-            </group>
-        </Float>
-    );
-}
-
-interface ConnectionLineProps {
-    start: [number, number, number];
-    end: [number, number, number];
-    color: string;
-}
-
-function ConnectionLine({ start, end, color }: ConnectionLineProps) {
-    return (
-        <Line
-            points={[start, end]}
-            color={color}
-            transparent
-            opacity={0.2}
-            lineWidth={1}
-        />
+        <mesh
+            ref={meshRef}
+            position={position}
+            onPointerOver={handlePointerOver}
+            onPointerOut={handlePointerOut}
+            scale={isHovered ? 1.3 : 1}
+        >
+            <sphereGeometry args={[size, 12, 12]} />
+            <meshStandardMaterial
+                color={isHovered ? lighterColor : SWISS_COLORS.white}
+                emissive={lighterColor}
+                emissiveIntensity={isHovered ? 0.6 : 0.35}
+                roughness={0.3}
+            />
+        </mesh>
     );
 }
 
@@ -132,140 +96,145 @@ interface Skills3DVisualizationProps {
     skills: Array<{
         name: string;
         category: string;
-        level: number; // 1-10
+        level: number;
     }>;
     categoryColors: Record<string, string>;
 }
 
-function Skills3DScene({ skills, categoryColors }: Skills3DVisualizationProps) {
-    const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
+interface HoverInfo {
+    name: string;
+    screenPos: { x: number; y: number };
+    color: string;
+}
+
+interface Skills3DSceneProps extends Skills3DVisualizationProps {
+    onHoverChange: (info: HoverInfo | null) => void;
+    isMobile: boolean;
+}
+
+function Skills3DScene({ skills, categoryColors, onHoverChange, isMobile }: Skills3DSceneProps) {
     const groupRef = useRef<THREE.Group>(null);
 
-    useFrame((state) => {
+    useFrame(() => {
         if (groupRef.current) {
-            groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.1) * 0.2;
+            groupRef.current.rotation.y += 0.002;
         }
     });
 
-    // Position skills in a 3D sphere
     const skillNodes = useMemo(() => {
+        const totalSkills = skills.length;
+        // Scale factor for mobile - optimized for iPhone XR (414px) and smaller
+        const scaleFactor = isMobile ? 0.6 : 1;
+
         return skills.map((skill, i) => {
-            const phi = Math.acos(-1 + (2 * i) / skills.length);
-            const theta = Math.sqrt(skills.length * Math.PI) * phi;
-            const radius = 3 + (skill.level / 10) * 1.5;
+            // Distribuzione Fibonacci sphere per uniformità
+            const goldenRatio = (1 + Math.sqrt(5)) / 2;
+            const theta = 2 * Math.PI * i / goldenRatio;
+            const phi = Math.acos(1 - 2 * (i + 0.5) / totalSkills);
+
+            // Compact radius for mobile fit
+            const baseRadius = (totalSkills > 30 ? 1.8 : 1.6) * scaleFactor;
+            const radius = baseRadius + (skill.level / 10) * 0.4 * scaleFactor;
 
             return {
                 ...skill,
                 position: [
-                    radius * Math.cos(theta) * Math.sin(phi),
-                    radius * Math.sin(theta) * Math.sin(phi),
+                    radius * Math.sin(phi) * Math.cos(theta),
+                    radius * Math.sin(phi) * Math.sin(theta),
                     radius * Math.cos(phi),
                 ] as [number, number, number],
-                size: 0.15 + (skill.level / 10) * 0.2,
+                // Smaller spheres for mobile
+                size: (totalSkills > 30 ? 0.06 : 0.08) * scaleFactor + (skill.level / 10) * 0.03 * scaleFactor,
+                color: getLighterColor(categoryColors[skill.category] || "#c6f135"),
             };
         });
-    }, [skills]);
+    }, [skills, categoryColors, isMobile]);
 
-    // Generate connections between skills in same category
-    const connections = useMemo(() => {
-        const conns: Array<{ start: [number, number, number]; end: [number, number, number]; color: string }> = [];
-
-        skillNodes.forEach((skill, i) => {
-            skillNodes.slice(i + 1).forEach((other) => {
-                if (skill.category === other.category) {
-                    conns.push({
-                        start: skill.position,
-                        end: other.position,
-                        color: categoryColors[skill.category] || "#ffffff",
-                    });
+    const handleNodeHover = useCallback(
+        (nodeName: string, nodeColor: string) =>
+            (name: string | null, screenPos: { x: number; y: number } | null) => {
+                if (name && screenPos) {
+                    onHoverChange({ name, screenPos, color: nodeColor });
+                } else {
+                    onHoverChange(null);
                 }
-            });
-        });
-
-        return conns;
-    }, [skillNodes, categoryColors]);
+            },
+        [onHoverChange]
+    );
 
     return (
         <group ref={groupRef}>
-            {/* Connection lines */}
-            {connections.map((conn, i) => (
-                <ConnectionLine key={i} {...conn} />
-            ))}
-
-            {/* Skill nodes */}
-            {skillNodes.map((skill, i) => (
+            {skillNodes.map((skill) => (
                 <Skill3DNode
                     key={skill.name}
                     position={skill.position}
-                    label={skill.name}
-                    color={categoryColors[skill.category] || "#c6f135"}
+                    color={skill.color}
                     size={skill.size}
-                    isHovered={hoveredSkill === skill.name}
-                    onHover={(hovered) => setHoveredSkill(hovered ? skill.name : null)}
+                    name={skill.name}
+                    onHover={handleNodeHover(skill.name, skill.color)}
                 />
             ))}
 
-            {/* Center sphere */}
+            {/* Center sphere - smaller */}
             <mesh>
-                <sphereGeometry args={[0.5, 32, 32]} />
+                <sphereGeometry args={[isMobile ? 0.12 : 0.15, 10, 10]} />
                 <meshStandardMaterial
-                    color="#1a1a1a"
-                    emissive="#c6f135"
-                    emissiveIntensity={0.1}
-                    metalness={0.9}
-                    roughness={0.1}
+                    color={SWISS_COLORS.white}
+                    emissive={SWISS_COLORS.lime}
+                    emissiveIntensity={0.3}
                 />
             </mesh>
         </group>
     );
 }
 
-// Fallback component when WebGL is not available or context is lost
 function FallbackVisualization({ skills, categoryColors }: Skills3DVisualizationProps) {
     return (
         <div className="w-full h-full min-h-[300px] relative bg-[#0a0a0a] border-2 border-[#1f1f1f] flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
             <div className="text-center mb-4 sm:mb-8">
-                <p className="swiss-overline text-[#c6f135] mb-1 sm:mb-2 text-[10px] sm:text-xs">SKILLS OVERVIEW</p>
+                <p className="swiss-overline text-[#d4ff4d] mb-1 sm:mb-2 text-[10px] sm:text-xs tracking-[0.2em] font-bold">SKILLS OVERVIEW</p>
                 <p className="swiss-caption text-[#666] text-[10px] sm:text-xs">Interactive 3D view unavailable</p>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 w-full max-w-2xl overflow-y-auto max-h-[200px] sm:max-h-[280px]">
-                {skills.slice(0, 16).map((skill) => (
-                    <div
-                        key={skill.name}
-                        className="p-2 sm:p-3 bg-[#111] border border-[#2a2a2a] hover:border-[#c6f135]/50 transition-colors touch-manipulation"
-                    >
-                        <div className="flex items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
-                            <div
-                                className="w-1.5 h-1.5 sm:w-2 sm:h-2 shrink-0"
-                                style={{ backgroundColor: categoryColors[skill.category] || "#c6f135" }}
-                            />
-                            <span className="swiss-caption text-white truncate text-[10px] sm:text-xs">{skill.name}</span>
+                {skills.map((skill) => {
+                    const lighterColor = getLighterColor(categoryColors[skill.category] || "#c6f135");
+                    return (
+                        <div
+                            key={skill.name}
+                            className="p-2 sm:p-3 bg-[#111] border border-[#2a2a2a] hover:border-[#d4ff4d]/50 transition-colors"
+                        >
+                            <div className="flex items-center gap-1 sm:gap-2 mb-1">
+                                <div
+                                    className="w-2 h-2 rounded-full shrink-0"
+                                    style={{ backgroundColor: lighterColor }}
+                                />
+                                <span className="text-white truncate text-[10px] sm:text-xs uppercase tracking-wide font-medium">{skill.name}</span>
+                            </div>
+                            <div className="h-1 bg-[#1a1a1a] rounded-full">
+                                <div
+                                    className="h-full rounded-full"
+                                    style={{
+                                        width: skill.level * 10 + "%",
+                                        backgroundColor: lighterColor,
+                                    }}
+                                />
+                            </div>
                         </div>
-                        <div className="h-0.5 sm:h-1 bg-[#1a1a1a]">
-                            <div
-                                className="h-full transition-all"
-                                style={{
-                                    width: `${skill.level * 10}%`,
-                                    backgroundColor: categoryColors[skill.category] || "#c6f135",
-                                }}
-                            />
-                        </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
 
-            {/* Legend - Mobile Responsive */}
-            <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 p-2 sm:p-4 border-2 border-[#2a2a2a] bg-[#0a0a0a]/90 max-w-[calc(100%-1rem)] sm:max-w-none">
-                <p className="swiss-overline text-[#c6f135] mb-1 sm:mb-2 tracking-widest text-[8px] sm:text-[10px]">CATEGORIES</p>
-                <div className="flex flex-wrap gap-1 sm:gap-3">
+            <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 p-2 sm:p-4 border-2 border-[#2a2a2a] bg-[#0a0a0a]/95">
+                <p className="text-[#d4ff4d] mb-1 tracking-[0.2em] text-[8px] sm:text-[10px] font-bold uppercase">Categories</p>
+                <div className="flex flex-wrap gap-2 sm:gap-4">
                     {Object.entries(categoryColors).map(([category, color]) => (
                         <div key={category} className="flex items-center gap-1 sm:gap-2">
                             <div
-                                className="w-2 h-2 sm:w-3 sm:h-3"
-                                style={{ backgroundColor: color }}
+                                className="w-2 h-2 sm:w-3 sm:h-3 rounded-full"
+                                style={{ backgroundColor: getLighterColor(color) }}
                             />
-                            <span className="swiss-caption text-[#888] uppercase tracking-wide text-[8px] sm:text-[10px]">{category}</span>
+                            <span className="text-[#aaa] uppercase tracking-wider text-[8px] sm:text-[10px] font-medium">{category}</span>
                         </div>
                     ))}
                 </div>
@@ -275,18 +244,26 @@ function FallbackVisualization({ skills, categoryColors }: Skills3DVisualization
 }
 
 export default function Skills3DVisualization({ skills, categoryColors }: Skills3DVisualizationProps) {
-    const [webGLSupported, setWebGLSupported] = useState<boolean | null>(null);
-    const [contextLost, setContextLost] = useState(false);
+    const [showFallback, setShowFallback] = useState(false);
     const [mounted, setMounted] = useState(false);
+    const [hoverInfo, setHoverInfo] = useState<HoverInfo | null>(null);
     const [isMobile, setIsMobile] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setMounted(true);
-        setWebGLSupported(isWebGLAvailable());
-        setIsMobile(window.innerWidth < 640);
+        const mobile = isMobileDevice();
+        setIsMobile(mobile);
 
+        // Only fallback if WebGL unavailable - show 3D on all devices including iPhone XR (414px)
+        if (!isWebGLAvailable()) {
+            setShowFallback(true);
+        }
+
+        // Handle resize
         const handleResize = () => {
-            setIsMobile(window.innerWidth < 640);
+            const newMobile = isMobileDevice();
+            setIsMobile(newMobile);
         };
 
         window.addEventListener('resize', handleResize);
@@ -296,69 +273,98 @@ export default function Skills3DVisualization({ skills, categoryColors }: Skills
         };
     }, []);
 
-    const handleContextLost = useCallback(() => {
-        setContextLost(true);
+    const handleError = useCallback(() => {
+        setShowFallback(true);
     }, []);
 
-    // Show nothing during SSR
+    const handleHoverChange = useCallback((info: HoverInfo | null) => {
+        setHoverInfo(info);
+    }, []);
+
     if (!mounted) {
-        return (
-            <div className="w-full h-[300px] sm:h-[400px] lg:h-[500px] relative animate-pulse" />
-        );
+        return <div className="w-full h-[280px] sm:h-[350px] lg:h-[450px] relative bg-[#0a0a0a]" />;
     }
 
-    // Show fallback if WebGL not supported or context was lost
-    if (!webGLSupported || contextLost) {
+    if (showFallback) {
         return <FallbackVisualization skills={skills} categoryColors={categoryColors} />;
     }
 
+    // Camera position optimized for iPhone XR and up
+    const cameraZ = isMobile ? 3.5 : 4.5;
+    const cameraFov = isMobile ? 60 : 50;
+
     return (
-        <div className="w-full h-full relative" style={{ background: 'transparent' }}>
+        <div ref={containerRef} className="w-full h-full min-h-[280px] sm:min-h-[350px] lg:min-h-[450px] relative" style={{ background: "transparent" }}>
             <Canvas
-                camera={{ position: [0, 0, isMobile ? 12 : 10], fov: isMobile ? 60 : 50 }}
+                camera={{ position: [0, 0, cameraZ], fov: cameraFov }}
                 gl={{
-                    antialias: !isMobile, // Disable antialiasing on mobile for performance
+                    antialias: false,
                     alpha: true,
-                    powerPreference: isMobile ? "low-power" : "high-performance",
-                    failIfMajorPerformanceCaveat: true, // Fail gracefully on weak devices
+                    powerPreference: "low-power",
+                    preserveDrawingBuffer: false,
+                    stencil: false,
+                    depth: true,
+                    failIfMajorPerformanceCaveat: false, // Allow mobile to try 3D
                 }}
-                style={{ background: 'transparent' }}
-                dpr={isMobile ? 1 : [1, 1.5]} // Lower DPR on mobile
+                dpr={1}
                 frameloop="always"
+                style={{ background: "transparent" }}
                 onCreated={({ gl }) => {
                     gl.setClearColor(0x000000, 0);
+                    gl.setPixelRatio(1);
+                    gl.domElement.addEventListener("webglcontextlost", (e) => {
+                        e.preventDefault();
+                        handleError();
+                    });
                 }}
             >
-                <ContextLossHandler onContextLost={handleContextLost} />
-
-                <ambientLight intensity={0.4} />
-                <pointLight position={[10, 10, 10]} intensity={0.8} color="#c6f135" />
-                <pointLight position={[-10, -10, -10]} intensity={0.4} color="#00f5ff" />
-
-                <Skills3DScene skills={skills} categoryColors={categoryColors} />
-
+                <ambientLight intensity={0.8} />
+                <pointLight position={[10, 10, 10]} intensity={0.6} />
+                <Skills3DScene
+                    skills={skills}
+                    categoryColors={categoryColors}
+                    onHoverChange={handleHoverChange}
+                    isMobile={isMobile}
+                />
                 <OrbitControls
                     enableZoom={false}
                     enablePan={false}
-                    autoRotate
-                    autoRotateSpeed={isMobile ? 0.3 : 0.5}
+                    enableRotate={true}
+                    autoRotate={false}
                     maxPolarAngle={Math.PI / 1.5}
                     minPolarAngle={Math.PI / 3}
-                    touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN }}
                 />
             </Canvas>
 
-            {/* Legend - Mobile Responsive */}
-            <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 p-2 sm:p-4 border-2 border-[#2a2a2a] bg-[#0a0a0a]/90 backdrop-blur-sm max-w-[calc(100%-1rem)] sm:max-w-none">
-                <p className="swiss-overline text-[#c6f135] mb-1 sm:mb-2 tracking-widest text-[8px] sm:text-[10px]">CATEGORIES</p>
-                <div className="flex flex-wrap gap-1 sm:gap-3">
+            {/* CSS Tooltip - rendered OUTSIDE Canvas to avoid WebGL issues */}
+            {hoverInfo && (
+                <div
+                    className="absolute pointer-events-none z-50 px-3 py-2 bg-[#0a0a0a]/95 border-2 backdrop-blur-sm transform -translate-x-1/2 -translate-y-full"
+                    style={{
+                        left: hoverInfo.screenPos.x,
+                        top: hoverInfo.screenPos.y - 20,
+                        borderColor: hoverInfo.color,
+                    }}
+                >
+                    <span
+                        className="text-xs font-bold uppercase tracking-[0.15em]"
+                        style={{ color: hoverInfo.color }}
+                    >
+                        {hoverInfo.name}
+                    </span>
+                </div>
+            )}
+
+            <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 p-2 sm:p-4 border-2 border-[#2a2a2a] bg-[#0a0a0a]/95 backdrop-blur-sm max-w-[calc(100%-1rem)] sm:max-w-none">
+                <p className="text-[#d4ff4d] mb-1 sm:mb-2 tracking-[0.2em] text-[8px] sm:text-[10px] font-bold uppercase">Categories</p>
+                <div className="flex flex-wrap gap-2 sm:gap-4">
                     {Object.entries(categoryColors).map(([category, color]) => (
                         <div key={category} className="flex items-center gap-1 sm:gap-2">
                             <div
-                                className="w-2 h-2 sm:w-3 sm:h-3"
-                                style={{ backgroundColor: color }}
+                                className="w-2 h-2 sm:w-3 sm:h-3 rounded-full"
+                                style={{ backgroundColor: getLighterColor(color) }}
                             />
-                            <span className="swiss-caption text-[#888] uppercase tracking-wide text-[8px] sm:text-[10px]">{category}</span>
+                            <span className="text-[#aaa] uppercase tracking-wider text-[8px] sm:text-[10px] font-medium">{category}</span>
                         </div>
                     ))}
                 </div>

@@ -30,18 +30,14 @@ export default function Skills() {
     const { t } = useLanguage();
     const [activeCategory, setActiveCategory] = useState(categories[0]);
     const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
-    const [viewMode, setViewMode] = useState<"grid" | "3d">("grid");
-    const [isMobile, setIsMobile] = useState(true); // Default to mobile to prevent 3D flash
+    const [viewMode, setViewMode] = useState<"grid" | "3d">("3d"); // Default to 3D on all devices
+    const [isMobile, setIsMobile] = useState(false);
 
-    // Detect mobile on mount and disable 3D on mobile
+    // Detect mobile on mount
     useEffect(() => {
         const checkMobile = () => {
             const mobile = window.innerWidth < 1024;
             setIsMobile(mobile);
-            // Force grid view on mobile
-            if (mobile) {
-                setViewMode("grid");
-            }
         };
         
         checkMobile();
