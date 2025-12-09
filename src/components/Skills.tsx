@@ -15,6 +15,15 @@ const colorMap: Record<string, string> = {
     orange: "#ff6b35",
 };
 
+// Map category names to their actual colors
+const getCategoryColor = (categoryName: string): string => {
+    const categoryData = skills[categoryName as keyof typeof skills];
+    if (categoryData) {
+        return colorMap[categoryData.color] || "#c6f135";
+    }
+    return "#c6f135";
+};
+
 const categories = Object.keys(skills);
 
 export default function Skills() {
@@ -23,12 +32,18 @@ export default function Skills() {
     const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<"grid" | "3d">("3d");
 
+    // Build the skills list with proper color mapping
     const skillsList = Object.entries(skills).flatMap(([category, data]) =>
         data.items.map(item => ({
             name: item,
             category,
             level: Math.floor(Math.random() * 3) + 7 // Mock level for visualization
         }))
+    );
+
+    // Create a category colors map for the 3D visualization
+    const categoryColorsFor3D = Object.fromEntries(
+        categories.map(cat => [cat, getCategoryColor(cat)])
     );
 
     return (
@@ -231,7 +246,7 @@ export default function Skills() {
                         >
                             <Skills3DWrapper
                                 skills={skillsList}
-                                categoryColors={colorMap}
+                                categoryColors={categoryColorsFor3D}
                             />
                         </motion.div>
                     )}
